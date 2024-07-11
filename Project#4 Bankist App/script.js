@@ -1,36 +1,32 @@
 'use strict';
 
-/////////////////////////////////////////////////
-/////////////////////////////////////////////////
-// BANKIST APP
-
 // Data
 const account1 = {
   owner: 'Jonas Schmedtmann',
   movements: [200, 450, -400, 3000, -650, -130, 70, 1300],
   interestRate: 1.2, // %
-  pin: 1111,
+  pin: 1111
 };
 
 const account2 = {
   owner: 'Jessica Davis',
   movements: [5000, 3400, -150, -790, -3210, -1000, 8500, -30],
   interestRate: 1.5,
-  pin: 2222,
+  pin: 2222
 };
 
 const account3 = {
   owner: 'Steven Thomas Williams',
   movements: [200, -200, 340, -300, -20, 50, 400, -460],
   interestRate: 0.7,
-  pin: 3333,
+  pin: 3333
 };
 
 const account4 = {
   owner: 'Sarah Smith',
   movements: [430, 1000, 700, 50, 90],
   interestRate: 1,
-  pin: 4444,
+  pin: 4444
 };
 
 const accounts = [account1, account2, account3, account4];
@@ -62,13 +58,12 @@ const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
 
-
-const displayMovements = function(movements){
+const displayMovements = function(movements) {
   containerMovements.innerHTML = '';
-  movements.forEach(function(mov,i){
-    const type = mov > 0? 'deposit': 'withdrawal';
+  movements.forEach(function(mov, i) {
+    const type = mov > 0 ? 'deposit' : 'withdrawal';
     let html = `<div class="movements__row">
-          <div class="movements__type movements__type--${type}">${i+1} ${type}</div>
+          <div class="movements__type movements__type--${type}">${i + 1} ${type}</div>
           <div class="movements__value">${mov}€</div>
         </div>`;
     containerMovements.insertAdjacentHTML('afterbegin', html);
@@ -78,24 +73,31 @@ const displayMovements = function(movements){
 displayMovements(account1.movements);
 
 
-const userNameGenerator = function(accounts){
-  accounts.forEach(function(account){
+const userNameGenerator = function(accounts) {
+  accounts.forEach(function(account) {
     const userName = account.owner.toLowerCase().split(' ');
-    account.username = userName.map(user =>user[0] ).join('');
-  })
+    account.username = userName.map(user => user[0]).join('');
+  });
 
-}
+};
 userNameGenerator(accounts);
 
-const calcDisplayBalance = function(movements){
-  const balance = movements.reduce((acc,curr) => acc+curr,0);
+const calcDisplayBalance = function(movements) {
+  const balance = movements.reduce((acc, curr) => acc + curr, 0);
   labelBalance.textContent = `${balance} EUR`;
-}
+};
 calcDisplayBalance(account1.movements);
 
-
-
-
-
-
+const calcDisplaySummary = function(movements) {
+  const incomes = movements.filter(mov => mov > 0).reduce((acc, curr) => acc + curr, 0);
+  labelSumIn.textContent = `${incomes} EUR`;
+  const outcomes = movements.filter(mov => mov < 0).reduce((acc, curr) => acc + curr, 0);
+  labelSumOut.textContent = `${Math.abs(outcomes)} EUR`;
+  const interest = movements.filter(mov => mov > 0)
+    .map(mov => mov * 1.2 / 100)
+    .filter(mov => mov >= 1)
+    .reduce((acc, curr) => acc + curr, 0);
+  labelSumInterest.textContent = `${Math.abs(interest)} EUR`;
+};
+calcDisplaySummary(account1.movements);
 
