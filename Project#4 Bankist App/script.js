@@ -63,9 +63,10 @@ const userNameGenerator = function(accounts) {
   });
 };
 userNameGenerator(accounts);
-const displayMovements = function(movements) {
+const displayMovements = function(movements, sort = false) {
   containerMovements.innerHTML = '';
-  movements.forEach(function(mov, i) {
+  let Movs = sort ? movements.slice().sort((a, b) => a - b) : movements;
+  Movs.forEach(function(mov, i) {
     const type = mov > 0 ? 'deposit' : 'withdrawal';
     let html = `<div class="movements__row">
           <div class="movements__type movements__type--${type}">${i + 1} ${type}</div>
@@ -77,19 +78,19 @@ const displayMovements = function(movements) {
 
 const calcDisplayBalance = function(account) {
   account.balance = account.movements.reduce((acc, curr) => acc + curr, 0);
-  labelBalance.textContent = `${account.balance} EUR`;
+  labelBalance.textContent = `${account.balance} €`;
 };
 
 const calcDisplaySummary = function(account) {
   const incomes = account.movements.filter(mov => mov > 0).reduce((acc, curr) => acc + curr, 0);
-  labelSumIn.textContent = `${incomes} EUR`;
+  labelSumIn.textContent = `${incomes} €`;
   const outcomes = account.movements.filter(mov => mov < 0).reduce((acc, curr) => acc + curr, 0);
-  labelSumOut.textContent = `${Math.abs(outcomes)} EUR`;
+  labelSumOut.textContent = `${Math.abs(outcomes)} €`;
   const interest = account.movements.filter(mov => mov > 0)
     .map(mov => (mov * account.interestRate) / 100)
     .filter(mov => mov >= 1)
     .reduce((acc, curr) => acc + curr, 0);
-  labelSumInterest.textContent = `${Math.abs(interest)} EUR`;
+  labelSumInterest.textContent = `${Math.abs(interest)} €`;
 };
 
 const updateUI = function(acc) {
@@ -105,6 +106,14 @@ const updateUI = function(acc) {
 let currentAccount;
 
 //Event handlers
+let sorted = false;
+
+btnSort.addEventListener('click', function(e) {
+  e.preventDefault();
+  displayMovements(currentAccount.movements, !sorted);
+  sorted = !sorted;
+  console.log(sorted);
+});
 
 
 btnLogin.addEventListener('click', function(e) {
@@ -163,6 +172,4 @@ btnClose.addEventListener('click', function(e) {
   inputCloseUsername.value = inputClosePin.value = '';
 
 });
-
-
 
