@@ -126,6 +126,18 @@ btnLogin.addEventListener('click', function(e) {
 });
 
 
+btnLoan.addEventListener('click', function(e) {
+  e.preventDefault();
+  const loan = Number(inputLoanAmount.value);
+  const canLoan = currentAccount.movements.some(mov => mov > loan * 0.1);
+  if (loan > 0 && canLoan) {
+    currentAccount.movements.push(loan);
+    updateUI(currentAccount);
+  }
+  inputLoanAmount.value = '';
+});
+
+
 btnTransfer.addEventListener('click', function(e) {
   e.preventDefault();
   const receiverAccount = accounts.find(account => inputTransferTo.value === account.username);
